@@ -1,5 +1,9 @@
 packer {
   required_plugins {
+    vagrant = {
+      version = ">= 1.1.0"
+      source  = "github.com/hashicorp/vagrant"
+    }
     utm = {
       version = ">=v0.0.2"
       source  = "github.com/naveenrajm7/utm"
@@ -64,11 +68,11 @@ locals {
                   "${path.root}/scripts/amazon/qemu-guest-agent.sh",
                   "${path.root}/scripts/_common/sshd.sh",
                   "${path.root}/scripts/_common/vagrant.sh",
-                ] : (
-                var.os_name == "alpine" ? [
-                  "${path.root}/scripts/_common/utm.sh",
-                  "${path.root}/scripts/openbsd/doas_openbsd.sh",
-                  ] :[]
+                  ] : (
+                  var.os_name == "alpine" ? [
+                    "${path.root}/scripts/_common/utm.sh",
+                    "${path.root}/scripts/openbsd/doas_openbsd.sh",
+                  ] : []
                 )
               )
             )
@@ -85,7 +89,7 @@ locals {
       ] : (
       var.os_name == "fedora" ? [
         "${path.root}/scripts/${var.os_name}/install-gnome_${var.os_name}.sh",
-      ] : [ "${path.root}/scripts/_common/dummy.sh" ]
+      ] : ["${path.root}/scripts/_common/dummy.sh"]
     )
   ) : var.gallery_scripts
 
@@ -129,7 +133,7 @@ build {
     )
     expect_disconnect = true
     scripts           = local.gallery_scripts
-    except              = var.for_gallery ? null : local.source_names
+    except            = var.for_gallery ? null : local.source_names
   }
 
   # Windows Updates and scripts
@@ -188,7 +192,7 @@ build {
   # Create a checksum file for the box file (used for vagrant-registry)
   post-processor "checksum" {
     checksum_types = ["sha512"]
-    output = "packer_{{.BuildName}}_{{.ChecksumType}}.checksum"
+    output         = "packer_{{.BuildName}}_{{.ChecksumType}}.checksum"
   }
 
   # To feed artifact to 'vagrant-registry' post-processor

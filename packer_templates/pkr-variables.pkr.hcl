@@ -78,8 +78,8 @@ variable "default_boot_wait" {
 }
 
 variable "use_cd" {
-  type    = bool
-  default = true
+  type        = bool
+  default     = true
   description = "Use cdrom to pass cloud-init data"
 }
 
