@@ -58,9 +58,10 @@ locals {
               "${path.root}/scripts/_common/utm.sh",
               ] : (
               var.os_name == "kali" ? [
-                "${path.root}/scripts/_common/sshd.sh",   
+                "${path.root}/scripts/_common/sshd.sh",
                 ] : (
                 var.os_name == "amazon" ? [
+                  "${path.root}/scripts/amazon/qemu-guest-agent.sh",
                   "${path.root}/scripts/_common/sshd.sh",
                   "${path.root}/scripts/_common/vagrant.sh",
                 ] : (
@@ -107,7 +108,7 @@ build {
       (var.os_name == "openbsd" || var.os_name == "alpine") ? "echo 'vagrant' | {{.Vars}} su -m root -c 'sh -eux {{.Path}}'" :
       "echo 'vagrant' | {{ .Vars }} sudo -S -E sh -eux '{{ .Path }}'"
     )
-    
+
     expect_disconnect = true
     scripts           = local.scripts
     except            = var.is_windows ? local.source_names : null
@@ -194,7 +195,7 @@ build {
   # from 'artifice' post-processor, we keep both in post-processors block
   post-processors {
     # 'vagrant-registry' post-processor only works for specific artifacts
-    # this post-processor requires an input artifact from the 
+    # this post-processor requires an input artifact from the
     # artifice post-processor, vagrant post-processor, or vagrant builder
     # so we need to use 'artifice' post-processor to create an artifact
     post-processor "artifice" {
@@ -219,10 +220,10 @@ build {
     post-processor "vagrant-registry" {
       client_id     = "${var.hcp_client_id}"
       client_secret = "${var.hcp_client_secret}"
-      box_tag       = "utm/${var.box_name}"
+      box_tag       = "nbarnum1/${var.box_name}"
       version       = "${var.version}"
       architecture  = "${var.os_arch == "x86_64" ? "amd64" : var.os_arch == "aarch64" ? "arm64" : var.os_arch}"
-      # checksum not working 
+      # checksum not working
       # box_checksum  = file("../packer_basic-example_sha512.final")
     }
   }

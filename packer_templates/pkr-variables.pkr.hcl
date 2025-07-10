@@ -26,7 +26,7 @@ variable "os_icon" {
 
 variable "keep_registered" {
   type    = bool
-  default = true
+  default = false
 }
 
 variable "is_windows" {
@@ -192,7 +192,7 @@ variable "winrm_username" {
 }
 
 # Source block provider specific variables
-# utm-utm 
+# utm-utm
 variable "utm_source_path" {
   type        = string
   default     = null
