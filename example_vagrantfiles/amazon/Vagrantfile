@@ -1,0 +1,45 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "nbarnum1/al2023"
+  config.vm.box_version = "2023.7.20250623.1"
+
+  # Hostname inside the VM
+  config.vm.hostname = "vagrant-al2023"
+
+  # Ports to forward
+  # config.vm.network "forwarded_port", guest: 80, host: 8989
+
+  # Use rsync because the qemu shared folders error with this on Amazon Linux 2023:
+  #   mount: /vagrant: unknown filesystem type '9p'.
+  config.vm.synced_folder ".", "/vagrant", type: "rsync"
+
+  # UTM provider specific configs
+  # Ref: https://naveenrajm7.github.io/vagrant_utm/configuration.html
+  config.vm.provider "utm" do |u|
+    # Disable qemu guest agent check at startup
+    # u.check_guest_additions = false
+
+    # Name in UTM UI
+    # u.name = "vagrant-amazon-linux-2023"
+
+    # CPU in cores
+    u.cpus = 2
+
+    # Memory in MB
+    u.memory = 2048
+
+    # Notes for UTM VM (Appears in UTM UI)
+    # u.notes = "Vagrant: For testing plugin development"
+
+    # QEMU Directoy Share mode for the VM.
+    # Takes none, webDAV or virtFS
+    # u.directory_share_mode = "virtFS"
+  end
+
+  # example shell provisioner
+  # config.vm.provision "shell", inline: <<-SHELL
+  #   dnf install vim
+  # SHELL
+end
